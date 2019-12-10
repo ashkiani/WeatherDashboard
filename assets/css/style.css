@@ -14,14 +14,10 @@ section{
   border: 2px solid black;
 }
 
-header{
+header,footer{
   padding: 10px;
   background: teal;
   border: 2px solid black;
-}
-
-footer{
-  padding: 10px;
-  background: teal;
-  border: 2px solid black;
+  text-align: center;
+  color:white;
 }
