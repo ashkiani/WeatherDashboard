@@ -18,10 +18,12 @@ $(document).ready(function () {
             $.ajax({
                 url: queryURL,
                 method: "GET"
-            }).then(function (response) {
+            }).done(function (response) {
                 console.log(response);
+            }).fail(function (response) {
+                console.log(response.responseJSON.message);
             });
         }
-        
+
     });
 });
