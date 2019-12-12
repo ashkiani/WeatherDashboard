@@ -1,7 +1,7 @@
 $(document).ready(function () {
     console.log("ready!");
     const apiKey = "8958a465fb84dd70a7e61cd199ace0f3";
-    const apiCall = "https://api.openweathermap.org/data/2.5/weather?q=";
+    const apiCall = "https://api.openweathermap.org/data/2.5/";
 
 
 
@@ -75,22 +75,47 @@ $(document).ready(function () {
     }
     renderButtons();
 
+    function getUV(response) {
+        //http://api.openweathermap.org/data/2.5/uvi?appid={appid}&lat={lat}&lon={lon}
+        queryURL = apiCall + "uvi?APPID=" + apiKey + "&lat=" + response.coord.lat + "&lon=" + response.coord.lon;
+        console.log(queryURL);
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).done(function (response) {
+            console.log(response);
+            currentWeatherUVEl.html("UV : " + response.value);
+        }).fail(function (response) {
+            currentWeatherUVEl.html("UV : Failed to retrieve UV");
+        });
+        
+    }
     var currentWeatherHeaderEl = $("#currentWeatherHeader");
     var currentWeatherTempEl = $("#currentWeatherTemp");
     var currentWeatherHumEl = $("#currentWeatherHum");
     var currentWeatherWindEl = $("#currentWeatherWind");
-    
+    var currentWeatherUVEl = $("#currentWeatherUV");
+
+    function clearWeatherData(){
+        currentWeatherHeaderEl.html("Loading...");
+        currentWeatherTempEl.html("Temperature : " );
+        currentWeatherHumEl.html("Humidity : " );
+        currentWeatherWindEl.html("Humidity : " );
+        currentWeatherUVEl.html("UV : " );
+    }
+
     function showWeatherData(response) {
         currentWeatherHeaderEl.html(response.name);
         currentWeatherTempEl.html("Temperature : " + response.main.temp);
-        currentWeatherHumEl.html("Humidity : " +response.main.humidity);
-        currentWeatherWindEl.html("Humidity : " +response.wind.speed);
-    
+        currentWeatherHumEl.html("Humidity : " + response.main.humidity);
+        currentWeatherWindEl.html("Humidity : " + response.wind.speed);
+        getUV(response);
     }
 
     function getWeather(txt) {
         if (txt !== "") {
-            queryURL = apiCall + txt + "&APPID=" + apiKey;
+            clearWeatherData();
+            queryURL = apiCall + "weather?q=" + txt + "&APPID=" + apiKey;
             console.log(queryURL);
             $.ajax({
                 url: queryURL,
