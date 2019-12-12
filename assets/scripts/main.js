@@ -63,7 +63,7 @@ $(document).ready(function () {
         weatherSearches.sort();
         weatherSearches.forEach(element => {
             var btn = $("<button>");
-            btn.addClass("btn btn-info btn-block");
+            btn.addClass("btn btn-info mx-3 btn-block");
             btn.html(element);
             btnDiv.append(btn);
             btn.click(function (event) {
@@ -74,10 +74,18 @@ $(document).ready(function () {
         });
     }
     renderButtons();
-    var weatherEl = $("#col2");
 
+    var currentWeatherHeaderEl = $("#currentWeatherHeader");
+    var currentWeatherTempEl = $("#currentWeatherTemp");
+    var currentWeatherHumEl = $("#currentWeatherHum");
+    var currentWeatherWindEl = $("#currentWeatherWind");
+    
     function showWeatherData(response) {
-        weatherEl.html(JSON.stringify(response));
+        currentWeatherHeaderEl.html(response.name);
+        currentWeatherTempEl.html("Temperature : " + response.main.temp);
+        currentWeatherHumEl.html("Humidity : " +response.main.humidity);
+        currentWeatherWindEl.html("Humidity : " +response.wind.speed);
+    
     }
 
     function getWeather(txt) {

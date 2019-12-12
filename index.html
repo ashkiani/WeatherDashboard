@@ -11,6 +11,7 @@
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
     <!-- <script type="text/javascript" src="./assets/data/city.list.json"></script> -->
     <script src="./assets/scripts/main.js"></script>
 </head>
@@ -22,7 +23,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-6">
-                <nav class="navbar navbar-light bg-light">
+                <nav class="navbar navbar-light bg-light mb-2">
                     <form class="form-inline">
                         <input class="form-control mr-sm-2" id="searchText" type="search" placeholder="Search"
                             aria-label="Search">
@@ -38,8 +39,21 @@
                 </div>
             </div>
             <div class="col-md-6" id="col2">
+                <div class="row" id="currentWeatherDiv">
+                    <div class="card text-white bg-primary my-3" >
+                        <div class="card-header" id="currentWeatherHeader">Date</div>
+                        <div class="card-body">
+                            <!-- <h5 class="card-title" id="currentWeatherTemp">Temp</h5> -->
+                            <p class="card-text" id="currentWeatherTemp">Temp</p>
+                            <p class="card-text" id="currentWeatherHum">Humidity</p>
+                            <p class="card-text" id="currentWeatherWind">Wind Speed</p>
+                                                        
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="forecastWeatherDiv">
 
-               
+                </div>
             </div>
         </div>
 
