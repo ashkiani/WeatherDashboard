@@ -106,16 +106,17 @@ $(document).ready(function () {
 
     function showWeatherData(response) {
         currentWeatherHeaderEl.html(response.name);
-        currentWeatherTempEl.html("Temperature : " + response.main.temp);
-        currentWeatherHumEl.html("Humidity : " + response.main.humidity);
-        currentWeatherWindEl.html("Humidity : " + response.wind.speed);
+        currentWeatherTempEl.html("Temperature : " + response.main.temp + " F");
+        currentWeatherHumEl.html("Humidity : " + response.main.humidity + " %");
+        currentWeatherWindEl.html("Humidity : " + response.wind.speed + " mph");
         getUV(response);
     }
 
     function getWeather(txt) {
         if (txt !== "") {
             clearWeatherData();
-            queryURL = apiCall + "weather?q=" + txt + "&APPID=" + apiKey;
+            // &units=imperial
+            queryURL = apiCall + "weather?q=" + txt + "&units=imperial" + "&APPID=" + apiKey;
             console.log(queryURL);
             $.ajax({
                 url: queryURL,
