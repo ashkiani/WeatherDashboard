@@ -11,6 +11,7 @@
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- <script type="text/javascript" src="./assets/data/city.list.json"></script> -->
     <script src="./assets/scripts/main.js"></script>
 </head>
 
@@ -19,12 +20,28 @@
         Weather Dashboard
     </header>
     <div class="container">
-        <nav class="navbar navbar-light bg-light">
-            <form class="form-inline">
-                <input class="form-control mr-sm-2" id="searchText" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" id="searchBtn" type="submit">Search</button>
-            </form>
-        </nav>
+        <div class="row">
+            <div class="col-md-6">
+                <nav class="navbar navbar-light bg-light">
+                    <form class="form-inline">
+                        <input class="form-control mr-sm-2" id="searchText" type="search" placeholder="Search"
+                            aria-label="Search">
+                        <button class="btn btn-outline-success my-2 my-sm-0" id="searchBtn"
+                            type="submit">Search</button>
+                    </form>
+                </nav>
+                <div class="row" id="searchMsg">
+
+                </div>
+                <div class="row" id="recentSearches">
+
+                </div>
+            </div>
+            <div class="col-md-6" id="col2">
+
+               
+            </div>
+        </div>
 
     </div>
     <footer>
