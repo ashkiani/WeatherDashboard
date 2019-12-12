@@ -1,7 +1,7 @@
 $(document).ready(function () {
     console.log("ready!");
     const apiKey = "8958a465fb84dd70a7e61cd199ace0f3";
-    const apiCall = "http://api.openweathermap.org/data/2.5/weather?q=";
+    const apiCall = "https://api.openweathermap.org/data/2.5/weather?q=";
 
 
 
