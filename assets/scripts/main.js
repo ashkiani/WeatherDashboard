@@ -1,5 +1,16 @@
 $(document).ready(function () {
     console.log("ready!");
+
+
+    navigator.geolocation.getCurrentPosition(function (location) {
+        console.log(location);
+        console.log(location.coords.latitude);
+        console.log(location.coords.longitude);
+        getWeatherByCoords(location.coords.longitude,location.coords.latitude);
+        console.log(location.coords.accuracy);
+    });
+
+
     const apiKey = "8958a465fb84dd70a7e61cd199ace0f3";
     const apiCall = "https://api.openweathermap.org/data/2.5/";
 
@@ -124,6 +135,25 @@ $(document).ready(function () {
         renderCard(response, currentWeatherHeaderEl, currentWeatherTempEl, currentWeatherHumEl, currentWeatherWindEl, response.name + " (" + moment().format("dddd, MMMM Do YYYY, h:mm a") + ")");
         getUV(response);
     }
+    // weather?lat=35&lon=139&appid
+    function getWeatherByCoords(lon, lat) {
+        clearWeatherData();
+            // &units=imperial
+            queryURL = apiCall + "weather?lat=" + lat + "&lon=" + lon + "&units=imperial" + "&APPID=" + apiKey;
+            console.log(queryURL);
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).done(function (response) {
+                console.log(response);
+                showWeatherData(response);
+                getForecast(response.id);
+
+            }).fail(function (response) {
+                console.log(response.responseJSON.message);
+                $("#searchMsg").html(response.responseJSON.message);
+            });
+    }
 
     function getWeather(txt) {
         if (txt !== "") {
@@ -164,19 +194,6 @@ $(document).ready(function () {
         var forecastMid = forecastList[Math.floor(forecastList.length / 2)];
         return forecastMid;
     }
-
-
-    /* <div class="card text-white bg-primary my-3" >
-                            <div class="card-header" id="currentWeatherHeader">Date</div>
-                            <div class="card-body">
-                                <!-- <h5 class="card-title" id="currentWeatherTemp">Temp</h5> -->
-                                <p class="card-text" id="currentWeatherTemp">Temp</p>
-                                <p class="card-text" id="currentWeatherHum">Humidity</p>
-                                <p class="card-text" id="currentWeatherWind">Wind Speed</p>
-                                <p class="card-text" id="currentWeatherUV">Wind Speed</p>
-                            </div>
-    <div class="col-md-8" id="col2">                    </div> */
-
 
 
     function showWeatherForecast(response) {
@@ -240,7 +257,7 @@ $(document).ready(function () {
             console.log(response);
 
             showWeatherForecast(response);
-          
+
         }).fail(function (response) {
             console.log(response.responseJSON.message);
             // $("#searchMsg").html(response.responseJSON.message);
