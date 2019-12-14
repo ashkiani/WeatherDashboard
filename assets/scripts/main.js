@@ -109,7 +109,7 @@ $(document).ready(function () {
     }
 
     function showWeatherData(response) {
-        currentWeatherHeaderEl.html(response.name);
+        currentWeatherHeaderEl.html(response.name + "(" + moment().format("dddd, MMMM Do YYYY, h:mm a") + ")");
         var imgPath = getImagePath(response);
         currentWeatherHeaderEl.append('<img id="currentImg" src="' + imgPath + '" height="42" width="42" />')
         currentWeatherTempEl.html("Temperature : " + response.main.temp + " F");
