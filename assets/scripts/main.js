@@ -5,6 +5,7 @@ $(document).ready(function () {
 
 
 
+
     var weatherSearches = [];
     function loadWeatherSearches() {
 
@@ -135,12 +136,69 @@ $(document).ready(function () {
                     localStorage.setItem("weatherSearches", JSON.stringify(weatherSearches));
                     renderButtons();
                 }
+                getForecast(response.id);
 
             }).fail(function (response) {
                 console.log(response.responseJSON.message);
                 $("#searchMsg").html(response.responseJSON.message);
             });
         }
+    }
+
+    function getForeCastForDate(date, response) {
+        var forecastList = [];
+        response.list.forEach(function (element) {
+            // Create a new JavaScript Date object based on the timestamp
+            // multiplied by 1000 so that the argument is in milliseconds, not seconds.
+            var dt = new Date(element.dt * 1000);
+            if (date == moment(dt).format("dddd, MMMM Do YYYY")) {
+                forecastList.push(element);
+            }
+        });
+        var forecastMid = forecastList[Math.floor(forecastList.length / 2)];
+        return forecastMid;
+    }
+
+    function showWeatherForecast(response) {
+        var forecastDate = [];
+        var today = moment();
+        for (var i = 0; i < 5; i++) {
+            // console.log(i);
+            var dt = today.add(1, 'd');
+            var dtString = today.format("dddd, MMMM Do YYYY");
+            console.log(dtString);
+            var forecastData = getForeCastForDate(dtString, response);
+            console.log(forecastData);
+        }
+    }
+
+    // api.openweathermap.org/data/2.5/forecast?id={city ID}
+    function getForecast(cityID) {
+        // clearForecastData();
+        // &units=imperial
+        queryURL = apiCall + "forecast?id=" + cityID + "&units=imperial" + "&APPID=" + apiKey;
+        console.log(queryURL);
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).done(function (response) {
+            console.log("Forecast");
+
+            console.log(response);
+
+            showWeatherForecast(response);
+
+            // showWeatherData(response);
+            // if (!weatherSearches.includes(txt)) {
+            //     weatherSearches.push(txt);
+            //     localStorage.setItem("weatherSearches", JSON.stringify(weatherSearches));
+            //     renderButtons();
+            // }
+
+        }).fail(function (response) {
+            console.log(response.responseJSON.message);
+            // $("#searchMsg").html(response.responseJSON.message);
+        });
     }
 
     $("#searchBtn").click(function (event) {
