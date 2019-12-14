@@ -111,8 +111,8 @@ $(document).ready(function () {
         return "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png";
     }
 
-    function renderCard(response,headerEl,TempEl,HumEl,WindEl,date){
-        headerEl.html(response.name + "(" + date + ")");
+    function renderCard(response, headerEl, TempEl, HumEl, WindEl, headerHtml) {
+        headerEl.html(headerHtml);
         var imgPath = getImagePath(response);
         headerEl.append('<img id="currentImg" src="' + imgPath + '" height="42" width="42" />')
         TempEl.html("Temperature : " + response.main.temp + " F");
@@ -121,13 +121,7 @@ $(document).ready(function () {
     }
 
     function showWeatherData(response) {
-        renderCard(response,currentWeatherHeaderEl,currentWeatherTempEl,currentWeatherHumEl,currentWeatherWindEl,moment().format("dddd, MMMM Do YYYY, h:mm a"));
-        // currentWeatherHeaderEl.html(response.name + "(" + moment().format("dddd, MMMM Do YYYY, h:mm a") + ")");
-        // var imgPath = getImagePath(response);
-        // currentWeatherHeaderEl.append('<img id="currentImg" src="' + imgPath + '" height="42" width="42" />')
-        // currentWeatherTempEl.html("Temperature : " + response.main.temp + " F");
-        // currentWeatherHumEl.html("Humidity : " + response.main.humidity + " %");
-        // currentWeatherWindEl.html("Humidity : " + response.wind.speed + " mph");
+        renderCard(response, currentWeatherHeaderEl, currentWeatherTempEl, currentWeatherHumEl, currentWeatherWindEl, response.name + " (" + moment().format("dddd, MMMM Do YYYY, h:mm a") + ")");
         getUV(response);
     }
 
@@ -157,7 +151,7 @@ $(document).ready(function () {
         }
     }
 
-    function getForeCastForDate(date, response) {
+    function getForeCastForData(date, response) {
         var forecastList = [];
         response.list.forEach(function (element) {
             // Create a new JavaScript Date object based on the timestamp
@@ -194,7 +188,7 @@ $(document).ready(function () {
             var dt = today.add(1, 'd');
             var dtString = today.format("DD-MM-YYYY");
             console.log(dtString);
-            var forecastData = getForeCastForDate(dtString, response);
+            var forecastData = getForeCastForData(dtString, response);
             console.log(forecastData);
             var col = $("<div>");
             col.addClass("col");
@@ -208,7 +202,7 @@ $(document).ready(function () {
             headerEl.addClass("card-header");
             headerEl.html(dtString);
             headerEl.appendTo(card);
-            
+
             var cardBody = $("<div>");
             cardBody.addClass("card-body");
             cardBody.appendTo(card);
@@ -216,8 +210,8 @@ $(document).ready(function () {
             tempEl.html("Temp:");
             tempEl.addClass("card-text");
             tempEl.appendTo(cardBody);
-            var humEl=$("<p>");
-            
+            var humEl = $("<p>");
+
             humEl.html("Humidity:");
             humEl.addClass("card-text");
             humEl.appendTo(cardBody);
@@ -225,8 +219,9 @@ $(document).ready(function () {
             windEl.html("Wind Speed:");
             windEl.addClass("card-text");
             windEl.appendTo(cardBody);
-            //renderCard(response,headerEl,tempEl,humEl,windEl,dtString);
-            
+            console.log(forecastData);
+            renderCard(forecastData, headerEl, tempEl, humEl, windEl, dtString);
+
         }
     }
 
@@ -245,14 +240,7 @@ $(document).ready(function () {
             console.log(response);
 
             showWeatherForecast(response);
-
-            // showWeatherData(response);
-            // if (!weatherSearches.includes(txt)) {
-            //     weatherSearches.push(txt);
-            //     localStorage.setItem("weatherSearches", JSON.stringify(weatherSearches));
-            //     renderButtons();
-            // }
-
+          
         }).fail(function (response) {
             console.log(response.responseJSON.message);
             // $("#searchMsg").html(response.responseJSON.message);
