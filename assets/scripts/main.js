@@ -88,7 +88,7 @@ $(document).ready(function () {
         }).fail(function (response) {
             currentWeatherUVEl.html("UV : Failed to retrieve UV");
         });
-        
+
     }
     var currentWeatherHeaderEl = $("#currentWeatherHeader");
     var currentWeatherTempEl = $("#currentWeatherTemp");
@@ -96,16 +96,22 @@ $(document).ready(function () {
     var currentWeatherWindEl = $("#currentWeatherWind");
     var currentWeatherUVEl = $("#currentWeatherUV");
 
-    function clearWeatherData(){
+    function clearWeatherData() {
         currentWeatherHeaderEl.html("Loading...");
-        currentWeatherTempEl.html("Temperature : " );
-        currentWeatherHumEl.html("Humidity : " );
-        currentWeatherWindEl.html("Humidity : " );
-        currentWeatherUVEl.html("UV : " );
+        currentWeatherTempEl.html("Temperature : ");
+        currentWeatherHumEl.html("Humidity : ");
+        currentWeatherWindEl.html("Humidity : ");
+        currentWeatherUVEl.html("UV : ");
+    }
+
+    function getImagePath(response) {
+        return "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png";
     }
 
     function showWeatherData(response) {
         currentWeatherHeaderEl.html(response.name);
+        var imgPath = getImagePath(response);
+        currentWeatherHeaderEl.append('<img id="currentImg" src="' + imgPath + '" height="42" width="42" />')
         currentWeatherTempEl.html("Temperature : " + response.main.temp + " F");
         currentWeatherHumEl.html("Humidity : " + response.main.humidity + " %");
         currentWeatherWindEl.html("Humidity : " + response.wind.speed + " mph");
