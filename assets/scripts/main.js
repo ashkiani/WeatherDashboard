@@ -96,6 +96,8 @@ $(document).ready(function () {
     var currentWeatherHumEl = $("#currentWeatherHum");
     var currentWeatherWindEl = $("#currentWeatherWind");
     var currentWeatherUVEl = $("#currentWeatherUV");
+    var forecastWeatherDivEl = $("#forecastWeatherDiv");
+
 
     function clearWeatherData() {
         currentWeatherHeaderEl.html("Loading...");
@@ -109,13 +111,23 @@ $(document).ready(function () {
         return "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png";
     }
 
-    function showWeatherData(response) {
-        currentWeatherHeaderEl.html(response.name + "(" + moment().format("dddd, MMMM Do YYYY, h:mm a") + ")");
+    function renderCard(response,headerEl,TempEl,HumEl,WindEl,date){
+        headerEl.html(response.name + "(" + date + ")");
         var imgPath = getImagePath(response);
-        currentWeatherHeaderEl.append('<img id="currentImg" src="' + imgPath + '" height="42" width="42" />')
-        currentWeatherTempEl.html("Temperature : " + response.main.temp + " F");
-        currentWeatherHumEl.html("Humidity : " + response.main.humidity + " %");
-        currentWeatherWindEl.html("Humidity : " + response.wind.speed + " mph");
+        headerEl.append('<img id="currentImg" src="' + imgPath + '" height="42" width="42" />')
+        TempEl.html("Temperature : " + response.main.temp + " F");
+        HumEl.html("Humidity : " + response.main.humidity + " %");
+        WindEl.html("Humidity : " + response.wind.speed + " mph");
+    }
+
+    function showWeatherData(response) {
+        renderCard(response,currentWeatherHeaderEl,currentWeatherTempEl,currentWeatherHumEl,currentWeatherWindEl,moment().format("dddd, MMMM Do YYYY, h:mm a"));
+        // currentWeatherHeaderEl.html(response.name + "(" + moment().format("dddd, MMMM Do YYYY, h:mm a") + ")");
+        // var imgPath = getImagePath(response);
+        // currentWeatherHeaderEl.append('<img id="currentImg" src="' + imgPath + '" height="42" width="42" />')
+        // currentWeatherTempEl.html("Temperature : " + response.main.temp + " F");
+        // currentWeatherHumEl.html("Humidity : " + response.main.humidity + " %");
+        // currentWeatherWindEl.html("Humidity : " + response.wind.speed + " mph");
         getUV(response);
     }
 
@@ -151,7 +163,7 @@ $(document).ready(function () {
             // Create a new JavaScript Date object based on the timestamp
             // multiplied by 1000 so that the argument is in milliseconds, not seconds.
             var dt = new Date(element.dt * 1000);
-            if (date == moment(dt).format("dddd, MMMM Do YYYY")) {
+            if (date == moment(dt).format("DD-MM-YYYY")) {
                 forecastList.push(element);
             }
         });
@@ -159,16 +171,62 @@ $(document).ready(function () {
         return forecastMid;
     }
 
+
+    /* <div class="card text-white bg-primary my-3" >
+                            <div class="card-header" id="currentWeatherHeader">Date</div>
+                            <div class="card-body">
+                                <!-- <h5 class="card-title" id="currentWeatherTemp">Temp</h5> -->
+                                <p class="card-text" id="currentWeatherTemp">Temp</p>
+                                <p class="card-text" id="currentWeatherHum">Humidity</p>
+                                <p class="card-text" id="currentWeatherWind">Wind Speed</p>
+                                <p class="card-text" id="currentWeatherUV">Wind Speed</p>
+                            </div>
+    <div class="col-md-8" id="col2">                    </div> */
+
+
+
     function showWeatherForecast(response) {
+        forecastWeatherDivEl.html("");
         var forecastDate = [];
         var today = moment();
         for (var i = 0; i < 5; i++) {
             // console.log(i);
             var dt = today.add(1, 'd');
-            var dtString = today.format("dddd, MMMM Do YYYY");
+            var dtString = today.format("DD-MM-YYYY");
             console.log(dtString);
             var forecastData = getForeCastForDate(dtString, response);
             console.log(forecastData);
+            var col = $("<div>");
+            col.addClass("col");
+            col.appendTo(forecastWeatherDivEl);
+            // col.html("test");
+            var card = $("<div>");
+            card.addClass("card text-white bg-primary my-3")
+            card.appendTo(col);
+            // card.html("test");
+            var headerEl = $("<div>");
+            headerEl.addClass("card-header");
+            headerEl.html(dtString);
+            headerEl.appendTo(card);
+            
+            var cardBody = $("<div>");
+            cardBody.addClass("card-body");
+            cardBody.appendTo(card);
+            var tempEl = $("<p>");
+            tempEl.html("Temp:");
+            tempEl.addClass("card-text");
+            tempEl.appendTo(cardBody);
+            var humEl=$("<p>");
+            
+            humEl.html("Humidity:");
+            humEl.addClass("card-text");
+            humEl.appendTo(cardBody);
+            var windEl = $("<p>");
+            windEl.html("Wind Speed:");
+            windEl.addClass("card-text");
+            windEl.appendTo(cardBody);
+            //renderCard(response,headerEl,tempEl,humEl,windEl,dtString);
+            
         }
     }
 
