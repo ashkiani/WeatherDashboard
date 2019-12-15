@@ -1,25 +1,18 @@
 $(document).ready(function () {
     console.log("ready!");
-
-
-    navigator.geolocation.getCurrentPosition(function (location) {
-        console.log(location);
-        console.log(location.coords.latitude);
-        console.log(location.coords.longitude);
-        getWeatherByCoords(location.coords.longitude,location.coords.latitude);
-        console.log(location.coords.accuracy);
-    });
-
-
     const apiKey = "8958a465fb84dd70a7e61cd199ace0f3";
     const apiCall = "https://api.openweathermap.org/data/2.5/";
-
-
-
-
     var weatherSearches = [];
-    function loadWeatherSearches() {
+    var lastSearch;
+    var currentWeatherHeaderEl = $("#currentWeatherHeader");
+    var currentWeatherTempEl = $("#currentWeatherTemp");
+    var currentWeatherHumEl = $("#currentWeatherHum");
+    var currentWeatherWindEl = $("#currentWeatherWind");
+    var currentWeatherUVEl = $("#currentWeatherUV");
+    var forecastWeatherDivEl = $("#forecastWeatherDiv");
 
+    // this function loads the weatherSearches and lastSearch variables
+    function loadWeatherSearches() {
         var value = localStorage.getItem("weatherSearches");
         if (value !== null) {
             console.log(value);
@@ -28,11 +21,35 @@ $(document).ready(function () {
                 weatherSearches = localWS;
             }
         }
+        var value = localStorage.getItem("lastWeatherSearch");
+        if (value !== null) {
+            console.log(value);
+            lastSearch = value;
+        }
     }
     loadWeatherSearches();
     console.log(weatherSearches);
 
+    //if there's a Last Search use it and show the weather for that location, otherwise see if we can find the current location
+    if (lastSearch != null) {
+        console.log("last search: " + lastSearch);
+        //remove the double quotes 
+        var lastSearchNoQuotes = lastSearch.replace(/['"]+/g, '');
+        console.log(lastSearchNoQuotes);
+        getWeather(lastSearchNoQuotes);
+    }
+    else {
+        //if there's no Last Search in the storage, and if we can get the current location then show the weather for the current location.
+        navigator.geolocation.getCurrentPosition(function (location) {
+            console.log(location);
+            console.log(location.coords.latitude);
+            console.log(location.coords.longitude);
+            getWeatherByCoords(location.coords.longitude, location.coords.latitude);
+            console.log(location.coords.accuracy);
+        });
+    }
 
+    //The code below will load an Auto Complete list from city.list.json but I commented it out since it was very slow.
     // var cities = [];
     // var i = 0;
     // data.forEach(element => {
@@ -63,13 +80,13 @@ $(document).ready(function () {
     //     opt.appendTo(dataList);
     // });
     // col2.append(dataList);
-
     // var txt = $("<input>");
     // txt.attr("type", "text");
     // txt.attr("list", "cities");
-
     // col2.append(txt);
+
     var btnDiv = $("#recentSearches");
+    //this function clears the Search buttons area and re load it per updated weatherSearches
     function renderButtons() {
         btnDiv.html("");
         weatherSearches.sort();
@@ -79,14 +96,15 @@ $(document).ready(function () {
             btn.html(element);
             btnDiv.append(btn);
             btn.click(function (event) {
-                // alert($(this).html());
                 var city = $(this).html();
+                console.log("Button Click: " + city);
                 getWeather(city);
             });
         });
     }
     renderButtons();
 
+    //this function retrieves UV data for the current response/location
     function getUV(response) {
         //http://api.openweathermap.org/data/2.5/uvi?appid={appid}&lat={lat}&lon={lon}
         queryURL = apiCall + "uvi?APPID=" + apiKey + "&lat=" + response.coord.lat + "&lon=" + response.coord.lon;
@@ -102,24 +120,19 @@ $(document).ready(function () {
         });
 
     }
-    var currentWeatherHeaderEl = $("#currentWeatherHeader");
-    var currentWeatherTempEl = $("#currentWeatherTemp");
-    var currentWeatherHumEl = $("#currentWeatherHum");
-    var currentWeatherWindEl = $("#currentWeatherWind");
-    var currentWeatherUVEl = $("#currentWeatherUV");
-    var forecastWeatherDivEl = $("#forecastWeatherDiv");
 
-
+    //Clears the current weather section
     function clearWeatherData() {
-        currentWeatherHeaderEl.html("Loading...");
+        currentWeatherHeaderEl.html("City/Date : Loading...");
         currentWeatherTempEl.html("Temperature : ");
         currentWeatherHumEl.html("Humidity : ");
         currentWeatherWindEl.html("Humidity : ");
         currentWeatherUVEl.html("UV : ");
     }
 
+    //Creates the url for the icon that is returned in the response
     function getImagePath(response) {
-        return "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png";
+        return "https://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png";
     }
 
     function renderCard(response, headerEl, TempEl, HumEl, WindEl, headerHtml) {
@@ -138,21 +151,21 @@ $(document).ready(function () {
     // weather?lat=35&lon=139&appid
     function getWeatherByCoords(lon, lat) {
         clearWeatherData();
-            // &units=imperial
-            queryURL = apiCall + "weather?lat=" + lat + "&lon=" + lon + "&units=imperial" + "&APPID=" + apiKey;
-            console.log(queryURL);
-            $.ajax({
-                url: queryURL,
-                method: "GET"
-            }).done(function (response) {
-                console.log(response);
-                showWeatherData(response);
-                getForecast(response.id);
+        // &units=imperial
+        queryURL = apiCall + "weather?lat=" + lat + "&lon=" + lon + "&units=imperial" + "&APPID=" + apiKey;
+        console.log(queryURL);
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).done(function (response) {
+            console.log(response);
+            showWeatherData(response);
+            getForecast(response.id);
 
-            }).fail(function (response) {
-                console.log(response.responseJSON.message);
-                $("#searchMsg").html(response.responseJSON.message);
-            });
+        }).fail(function (response) {
+            console.log(response.responseJSON.message);
+            $("#searchMsg").html(response.responseJSON.message);
+        });
     }
 
     function getWeather(txt) {
@@ -167,6 +180,8 @@ $(document).ready(function () {
             }).done(function (response) {
                 console.log(response);
                 showWeatherData(response);
+                lastSearch = txt;
+                localStorage.setItem("lastWeatherSearch", JSON.stringify(lastSearch));
                 if (!weatherSearches.includes(txt)) {
                     weatherSearches.push(txt);
                     localStorage.setItem("weatherSearches", JSON.stringify(weatherSearches));
@@ -267,11 +282,8 @@ $(document).ready(function () {
     $("#searchBtn").click(function (event) {
         event.preventDefault();
         var txt = $("#searchText").val();
-
         txt = txt.trim();
-
         getWeather(txt);
-
 
     });
 });
