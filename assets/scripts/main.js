@@ -125,7 +125,7 @@ $(document).ready(function () {
         currentWeatherHeaderEl.html("City/Date : Loading...");
         currentWeatherTempEl.html("Temperature : ");
         currentWeatherHumEl.html("Humidity : ");
-        currentWeatherWindEl.html("Humidity : ");
+        currentWeatherWindEl.html("Wind Speed : ");
         currentWeatherUVEl.html("UV : ");
     }
 
@@ -140,7 +140,7 @@ $(document).ready(function () {
         headerEl.append('<img id="currentImg" src="' + imgPath + '" height="42" width="42" />')
         TempEl.html("Temperature : " + response.main.temp + " F");
         HumEl.html("Humidity : " + response.main.humidity + " %");
-        WindEl.html("Humidity : " + response.wind.speed + " mph");
+        WindEl.html("Wind Speed : " + response.wind.speed + " mph");
     }
 
     //Shows the input weather data on the page.
