@@ -228,7 +228,7 @@ $(document).ready(function () {
             // Create a new JavaScript Date object based on the timestamp
             // multiplied by 1000 so that the argument is in milliseconds, not seconds.
             var dt = new Date(element.dt * 1000);
-            if (date == moment(dt).format("DD-MM-YYYY")) {
+            if (date == moment(dt).format("MM-DD-YYYY")) {
                 forecastList.push(element);
             }
         });
@@ -244,7 +244,7 @@ $(document).ready(function () {
         for (var i = 0; i < 5; i++) {
             // console.log(i);
             var dt = today.add(1, 'd');
-            var dtString = today.format("DD-MM-YYYY");
+            var dtString = today.format("MM-DD-YYYY");
             console.log(dtString);
             var forecastData = getForeCastForData(dtString, response);
             console.log(forecastData);
