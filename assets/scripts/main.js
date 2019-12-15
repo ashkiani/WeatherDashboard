@@ -89,7 +89,6 @@ $(document).ready(function () {
     //this function clears the Search buttons area and re load it per updated weatherSearches
     function renderButtons() {
         btnDiv.html("");
-        weatherSearches.sort();
         weatherSearches.forEach(element => {
             var btn = $("<button>");
             btn.addClass("btn btn-info mx-3 btn-block");
@@ -171,6 +170,24 @@ $(document).ready(function () {
         });
     }
 
+    // Checks if txt exists in the weatherSearches array. this function is case insensitive
+    function weatherSearchesInclude(txt) {
+        console.log("checking weatherSearches for:" + txt);
+        var found = false;
+        var lowerTxt = txt.toLowerCase();
+        console.log("checking weatherSearches for:" + lowerTxt);
+        for (var i = 0; i < weatherSearches.length; i++) {
+            console.log(weatherSearches[i].toLowerCase());
+            if (weatherSearches[i].toLowerCase() === lowerTxt) {
+                console.log("Found");
+                found = true;
+                break;
+            }
+            console.log("Not found");
+        }
+        return found;
+    }
+
     //Retrieves the current weather data for the input city and then shows the data on the page.
     function getWeather(txt) {
         if (txt !== "") {
@@ -186,11 +203,13 @@ $(document).ready(function () {
                 showWeatherData(response);
                 lastSearch = txt;
                 localStorage.setItem("lastWeatherSearch", JSON.stringify(lastSearch));
-                if (!weatherSearches.includes(txt)) {
+                if (!weatherSearchesInclude(txt)) {
                     weatherSearches.push(txt);
+                    weatherSearches.sort();
                     localStorage.setItem("weatherSearches", JSON.stringify(weatherSearches));
                     renderButtons();
                 }
+
                 getForecast(response.id);
 
             }).fail(function (response) {
