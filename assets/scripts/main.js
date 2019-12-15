@@ -104,7 +104,7 @@ $(document).ready(function () {
     }
     renderButtons();
 
-    //this function retrieves UV data for the current response/location
+    //this function retrieves the UV data for the current response/location.
     function getUV(response) {
         //http://api.openweathermap.org/data/2.5/uvi?appid={appid}&lat={lat}&lon={lon}
         queryURL = apiCall + "uvi?APPID=" + apiKey + "&lat=" + response.coord.lat + "&lon=" + response.coord.lon;
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
     }
 
-    //Clears the current weather section
+    //Clears the current weather section.
     function clearWeatherData() {
         currentWeatherHeaderEl.html("City/Date : Loading...");
         currentWeatherTempEl.html("Temperature : ");
@@ -130,7 +130,7 @@ $(document).ready(function () {
         currentWeatherUVEl.html("UV : ");
     }
 
-    //Creates the url for the icon that is returned in the response
+    //Creates the url for the icon that is returned in the response.
     function getImagePath(response) {
         return "https://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png";
     }
@@ -144,12 +144,15 @@ $(document).ready(function () {
         WindEl.html("Humidity : " + response.wind.speed + " mph");
     }
 
+    //Shows the input weather data on the page.
     function showWeatherData(response) {
         renderCard(response, currentWeatherHeaderEl, currentWeatherTempEl, currentWeatherHumEl, currentWeatherWindEl, response.name + " (" + moment().format("dddd, MMMM Do YYYY, h:mm a") + ")");
         getUV(response);
     }
-    // weather?lat=35&lon=139&appid
+
+    //Retrieves the current weather data for the input coordinates and then shows the data on the page.
     function getWeatherByCoords(lon, lat) {
+        // weather?lat=35&lon=139&appid
         clearWeatherData();
         // &units=imperial
         queryURL = apiCall + "weather?lat=" + lat + "&lon=" + lon + "&units=imperial" + "&APPID=" + apiKey;
@@ -168,6 +171,7 @@ $(document).ready(function () {
         });
     }
 
+    //Retrieves the current weather data for the input city and then shows the data on the page.
     function getWeather(txt) {
         if (txt !== "") {
             clearWeatherData();
@@ -196,6 +200,9 @@ $(document).ready(function () {
         }
     }
 
+    // The API returns 5 days forecast and up to 8 objects for each day (one per hour) i.e. 40 objects are in the response. 
+    // This function extracts the data that is relevant to the input --date variable-- and then it selects the middle value.
+    // We could alternatively calculate the average in future but for the initial version of the app we will take the middle value as the average.
     function getForeCastForData(date, response) {
         var forecastList = [];
         response.list.forEach(function (element) {
@@ -210,7 +217,7 @@ $(document).ready(function () {
         return forecastMid;
     }
 
-
+    //Shows the input forecast on the page. It dynamically adds cards.
     function showWeatherForecast(response) {
         forecastWeatherDivEl.html("");
         var forecastDate = [];
@@ -257,8 +264,9 @@ $(document).ready(function () {
         }
     }
 
-    // api.openweathermap.org/data/2.5/forecast?id={city ID}
+    //Retrieves the forecast for the input ID.
     function getForecast(cityID) {
+        // api.openweathermap.org/data/2.5/forecast?id={city ID}
         // clearForecastData();
         // &units=imperial
         queryURL = apiCall + "forecast?id=" + cityID + "&units=imperial" + "&APPID=" + apiKey;
@@ -268,22 +276,19 @@ $(document).ready(function () {
             method: "GET"
         }).done(function (response) {
             console.log("Forecast");
-
             console.log(response);
-
             showWeatherForecast(response);
-
         }).fail(function (response) {
             console.log(response.responseJSON.message);
             // $("#searchMsg").html(response.responseJSON.message);
         });
     }
 
+    //Handles the Search button click.
     $("#searchBtn").click(function (event) {
         event.preventDefault();
         var txt = $("#searchText").val();
         txt = txt.trim();
         getWeather(txt);
-
     });
 });
