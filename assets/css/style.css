@@ -21,3 +21,6 @@ header,footer{
   text-align: center;
   color:white;
 }
+#search-col{
+  border: 1px solid black;
+}
